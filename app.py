@@ -1,28 +1,28 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_absolute_error
+import streamlit as st
 
-# Load dataset from GitHub (replace with your GitHub raw file link)
-url = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/AmesHousing.xlsx"
-df = pd.read_excel(url)
+# Streamlit App UI
+st.title("Ames Housing Price Predictor")
+st.write("Enter details about the house to predict its price.")
 
-# Select relevant features and target
-features = ['OverallQual', 'GrLivArea', 'GarageCars', 'TotalBsmtSF', 'YearBuilt']
-target = 'SalePrice'
+# Input fields
+overall_qual = st.number_input("Overall Quality (1-10)", min_value=1, max_value=10, value=5)
+gr_liv_area = st.number_input("Above Ground Living Area (sq ft)", min_value=500, max_value=5000, value=1500)
+garage_cars = st.number_input("Garage Spaces", min_value=0, max_value=4, value=2)
+total_bsmt_sf = st.number_input("Total Basement Size (sq ft)", min_value=0, max_value=3000, value=800)
+year_built = st.number_input("Year Built", min_value=1872, max_value=2023, value=2000)
 
-df = df[features + [target]].dropna()
+# Predict button
+if st.button("Predict Price"):
+    # Prepare input data
+    input_data = pd.DataFrame([[overall_qual, gr_liv_area, garage_cars, total_bsmt_sf, year_built]], columns=features)
+    input_data_scaled = scaler.transform(input_data)
 
-# Split data into train and test sets
-X = df[features]
-y = df[target]
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Make prediction
+    prediction = model.predict(input_data_scaled)[0]
+    
+    # Display result
+    st.write(f"Estimated House Price: **${prediction:,.2f}**")
 
-# Standardize the features
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
 
 # Train a regression model
 model = RandomForestRegressor(n_estimators=100, random_state=42)
